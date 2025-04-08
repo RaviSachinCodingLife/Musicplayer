@@ -1,0 +1,204 @@
+[
+    {
+      "id": 1,
+      "category": "Trending",
+      "title": "Ram Siya Ram (From 'Adipurush')",
+      "artist": "Sachet Tandon, Parampara Tandon",
+      "image": "/assets/image/1.jpg",
+      "audio": "/assets/audio/1.mp3"
+    },
+    {
+      "id": 2,
+      "category": "Trending",
+      "title": "Kesariya (From 'Brahmastra')",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/2.jpg",
+      "audio": "/assets/audio/2.mp3"
+    },
+    {
+      "id": 3,
+      "category": "Trending",
+      "title": "Pasoori",
+      "artist": "Ali Sethi, Shae Gill",
+      "image": "/assets/image/3.jpg",
+      "audio": "/assets/audio/3.mp3"
+    },
+    {
+      "id": 4,
+      "category": "Trending",
+      "title": "Apna Bana Le Piya",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/4.png",
+      "audio": "/assets/audio/4.mp3"
+    },
+    {
+      "id": 5,
+      "category": "Trending",
+      "title": "Heeriye",
+      "artist": "Arijit Singh, Jasleen Royal",
+      "image": "/assets/image/5.jpg",
+      "audio": "/assets/audio/5.mp3"
+    },
+   
+    {
+        "id": 6,
+        "category": "Trending",
+        "title": "Phir Aur Kya Chahiye",
+        "artist": "Arijit Singh",
+        "image": "/assets/image/6.jpg",
+        "audio": "/assets/audio/6.mp3"
+      },
+      {
+        "id": 7,
+        "category": "Trending",
+        "title": "Ram Siya Ram (From 'Adipurush')",
+        "artist": "Sachet Tandon, Parampara Tandon",
+        "image": "/assets/image/1.jpg",
+        "audio": "/assets/audio/1.mp3"
+      },
+      {
+        "id": 8,
+        "category": "Trending",
+        "title": "Kesariya (From 'Brahmastra')",
+        "artist": "Arijit Singh",
+        "image": "/assets/image/2.jpg",
+        "audio": "/assets/audio/2.mp3"
+      },
+    {
+      "id": 9,
+      "category": "Popular Artist",
+      "title": "Tum Hi Ho",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/7.jpg",
+      "audio": "/assets/audio/7.mp3"
+    },
+    {
+      "id": 10,
+      "category": "Popular Artist",
+      "title": "Raataan Lambiyan",
+      "artist": "Jubin Nautiyal, Asees Kaur",
+      "image": "/assets/image/8.jpg",
+      "audio": "/assets/audio/8.mp3"
+    },
+    {
+      "id": 11,
+      "category": "Popular Artist",
+      "title": "Tera Yaar Hoon Main",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/9.jpg",
+      "audio": "/assets/audio/9.mp3"
+    },
+    {
+      "id": 12,
+      "category": "Popular Artist",
+      "title": "Pachtaoge",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/10.jpg",
+      "audio": "/assets/audio/10.mp3"
+    },
+    {
+      "id": 13,
+      "category": "Popular Artist",
+      "title": "Tujhe Kitna Chahne Lage",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/11.jpg",
+      "audio": "/assets/audio/11.mp3"
+    },
+    {
+      "id": 14,
+      "category": "Popular Artist",
+      "title": "Dil Diyan Gallan",
+      "artist": "Atif Aslam",
+      "image": "/assets/image/12.jpg",
+      "audio": "/assets/audio/12.mp3"
+    },
+    {
+      "id": 15,
+      "category": "Popular Artist",
+      "title": "Tum Hi Ho",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/7.jpg",
+      "audio": "/assets/audio/7.mp3"
+    },
+    {
+      "id": 16,
+      "category": "Popular Artist",
+      "title": "Raataan Lambiyan",
+      "artist": "Jubin Nautiyal, Asees Kaur",
+      "image": "/assets/image/8.jpg",
+      "audio": "/assets/audio/8.mp3"
+    },
+    {
+      "id": 17,
+      "category": "Album & Singles",
+      "title": "Bekhayali",
+      "artist": "Sachet Tandon",
+      "image": "/assets/image/11.jpg",
+      "audio": "/assets/audio/13.mp3"
+    },
+    {
+      "id": 18,
+      "category": "Album & Singles",
+      "title": "Shayad",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/14.jpg",
+      "audio": "/assets/audio/14.mp3"
+    },
+    {
+      "id": 19,
+      "category": "Album & Singles",
+      "title": "Vaaste",
+      "artist": "Dhvani Bhanushali",
+      "image": "/assets/image/15.jpg",
+      "audio": "/assets/audio/15.mp3"
+    },
+    {
+      "id": 20,
+      "category": "Album & Singles",
+      "title": "Lut Gaye",
+      "artist": "Jubin Nautiyal",
+      "image": "/assets/image/16.jpg",
+      "audio": "/assets/audio/16.mp3"
+    },
+    {
+      "id": 21,
+      "category": "Album & Singles",
+      "title": "Ranjha",
+      "artist": "B Praak, Jasleen Royal",
+      "image": "/assets/image/17.jpg",
+      "audio": "/assets/audio/17.mp3"
+    },
+    {
+      "id": 22,
+      "category": "Album & Singles",
+      "title": "Le Ja Re",
+      "artist": "Dhvani Bhanushali",
+      "image": "/assets/image/18.jpg",
+      "audio": "/assets/audio/18.mp3"
+    },
+    {
+      "id": 23,
+      "category": "Album & Singles",
+      "title": "Bekhayali",
+      "artist": "Sachet Tandon",
+      "image": "/assets/image/11.jpg",
+      "audio": "/assets/audio/13.mp3"
+    },
+    {
+      "id": 24,
+      "category": "Album & Singles",
+      "title": "Shayad",
+      "artist": "Arijit Singh",
+      "image": "/assets/image/14.jpg",
+      "audio": "/assets/audio/14.mp3"
+    },
+    {
+      "id": 25,
+      "category": "Popular Artist",
+      "title": "Agar Tum Saath Ho",
+      "artist": "Arijit Singh, Alka Yagnik",
+      "image": "/assets/image/19.jpg",
+      "audio": "/assets/audio/19.mp3"
+    }
+  ]
+  
