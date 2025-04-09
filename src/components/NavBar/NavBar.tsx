@@ -1,10 +1,11 @@
-import { FC, Fragment } from "react";
+import { FC } from "react";
 import {
   AppBar,
   Avatar,
   Box,
   Container,
   IconButton,
+  Link,
   Menu,
   MenuItem,
   Toolbar,
@@ -18,13 +19,14 @@ import * as style from "./style";
 import { NavBarProps } from "./types";
 import { useNavbar } from "./useNavbarHook";
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Logout"];
 
 const NavBar: FC<NavBarProps> = ({
   showSearchBar = true,
   showProfile = true,
   showSupport = true,
   showMobileView = true,
+  onSearchChange = () => {},
 }) => {
   const {
     anchorElNav,
@@ -35,13 +37,17 @@ const NavBar: FC<NavBarProps> = ({
     handleCloseUserMenu,
   } = useNavbar();
 
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    onSearchChange(event.target.value);
+  };
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "?";
+
   return (
-    <AppBar
-      position="sticky"
-      sx={{
-        backgroundColor: "#000",
-      }}
-    >
+    <AppBar position="sticky" sx={{ backgroundColor: "#000" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box
@@ -52,9 +58,7 @@ const NavBar: FC<NavBarProps> = ({
               alignItems: "center",
             }}
           >
-            {/* Left Section: Logo + Name + Search */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              {/* Logo */}
               <IconButton
                 aria-label="icon"
                 sx={{ display: { xs: "none", md: "flex" } }}
@@ -62,18 +66,13 @@ const NavBar: FC<NavBarProps> = ({
                 <img
                   src={icon}
                   alt="icon"
-                  style={{
-                    marginRight: "8px",
-                    height: "45px",
-                    width: "45px",
-                  }}
+                  style={{ marginRight: "8px", height: "45px", width: "45px" }}
                 />
               </IconButton>
 
               <Typography
                 variant="h6"
                 noWrap
-                component="div"
                 sx={{
                   display: { xs: "none", md: "flex" },
                   fontWeight: 400,
@@ -84,13 +83,10 @@ const NavBar: FC<NavBarProps> = ({
                 BeatBox
               </Typography>
 
-              {/* Search (desktop only) */}
+              {/* Desktop Search */}
               {showSearchBar && (
                 <Box
-                  sx={{
-                    display: { xs: "none", md: "flex" },
-                    color: "#fff",
-                  }}
+                  sx={{ display: { xs: "none", md: "flex" }, color: "#fff" }}
                 >
                   <style.SearchContainer>
                     <style.SearchIconWrapper>
@@ -99,6 +95,7 @@ const NavBar: FC<NavBarProps> = ({
                     <style.StyledInputBase
                       placeholder="Search…"
                       inputProps={{ "aria-label": "search" }}
+                      onChange={handleSearchInputChange}
                     />
                   </style.SearchContainer>
                 </Box>
@@ -131,6 +128,7 @@ const NavBar: FC<NavBarProps> = ({
                           <style.StyledInputBase
                             placeholder="Search…"
                             inputProps={{ "aria-label": "search" }}
+                            onChange={handleSearchInputChange}
                           />
                         </style.SearchContainer>
                       </MenuItem>
@@ -161,7 +159,6 @@ const NavBar: FC<NavBarProps> = ({
               </Typography>
             </Box>
 
-            {/* Right Section: Support + Avatar */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               {showSupport && (
                 <Typography variant="h6" sx={{ color: "#fff" }}>
@@ -173,10 +170,9 @@ const NavBar: FC<NavBarProps> = ({
                 <Box>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar
-                        alt="User Avatar"
-                        src="/static/images/avatar/2.jpg"
-                      />
+                      <Avatar sx={{ bgcolor: "#8d2c91", color: "#fff" }}>
+                        {userInitial}
+                      </Avatar>
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -189,7 +185,15 @@ const NavBar: FC<NavBarProps> = ({
                   >
                     {settings.map((setting) => (
                       <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                        <Typography textAlign="center">{setting}</Typography>
+                        <Link
+                          href="/"
+                          underline="none"
+                          display="block"
+                          color="#000"
+                          onClick={() => localStorage.removeItem("user")}
+                        >
+                          <Typography textAlign="center">{setting}</Typography>
+                        </Link>
                       </MenuItem>
                     ))}
                   </Menu>
