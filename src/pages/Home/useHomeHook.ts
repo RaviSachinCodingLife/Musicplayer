@@ -16,7 +16,7 @@ export const useHome = () => {
 
   const handleAlbumClick = (album: AlbumType) => {
     const foundCategory = categories.find((cat) =>
-      albumData.some((a, idx) => a.id === album.id && a.category === cat.key)
+      albumData.some((a) => a.id === album.id && a.category === cat.key)
     );
 
     const currentCategoryKey = foundCategory?.key || "";
