@@ -10,6 +10,27 @@ const bgImage: SxProps = {
   backgroundPosition: "center",
   backgroundRepeat: "no-repeat",
   cursor: "pointer",
+  "@media only screen and (max-width: 400px)": {
+    height: "50vh",
+    px: 1,
+    backgroundPosition: "top",
+  },
+  "@media only screen and (max-width: 600px)": {
+    height: "55vh",
+    px: 2,
+  },
+  "@media only screen and (min-width: 600px)": {
+    height: "60vh",
+  },
+  "@media only screen and (min-width: 768px)": {
+    height: "65vh",
+  },
+  "@media only screen and (min-width: 992px)": {
+    height: "70vh",
+  },
+  "@media only screen and (min-width: 1200px)": {
+    height: "70vh",
+  },
 };
 
 const loginMainBox: SxProps = {
@@ -20,6 +41,9 @@ const loginMainBox: SxProps = {
   minHeight: "100vh",
   bgcolor: "#121212",
   px: 2,
+  "@media only screen and (max-width: 600px)": {
+    py: 2,
+  },
 };
 
 const loginChildBox: SxProps = {
@@ -31,6 +55,14 @@ const loginChildBox: SxProps = {
   borderRadius: 2,
   p: 4,
   boxShadow: 4,
+  "@media only screen and (max-width: 400px)": {
+    padding: "20px",
+  },
+
+  "@media only screen and (max-width: 600px)": {
+    maxWidth: "90%",
+    padding: "25px",
+  },
 };
 
 const iconBeatBox: CSSProperties = {
@@ -44,6 +76,11 @@ const titleTypo: SxProps = {
   color: "#fff",
   textAlign: "center",
   mb: 3,
+  fontSize: {
+    xs: "1.5rem",
+    sm: "1.8rem",
+    md: "2rem",
+  },
 };
 
 const textField: SxProps = {

@@ -5,6 +5,7 @@ import MusicPlayer from "../../components/MusicPlayer/MusicPlayer";
 import AddIcon from "@mui/icons-material/Add";
 import albumData from "../../json/AlbumCard.json";
 import { useHome } from "./useHomeHook";
+import * as style from "./style";
 
 const Home = () => {
   const {
@@ -121,7 +122,7 @@ const Home = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column">
+    <Box sx={style.layoutWrapper}>
       <NavBar
         showSearchBar
         showProfile
@@ -132,22 +133,10 @@ const Home = () => {
         }
       />
 
-      <Box display="flex" gap={1} mx={2}>
+      <Box sx={style.mainContainer}>
         {/* Sidebar */}
-        <Box
-          bgcolor="#212121"
-          borderRadius="10px"
-          width="30%"
-          height={state.selectedAlbum ? "80vh" : "90vh"}
-          overflow="auto"
-          p={2}
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-          >
+        <Box sx={style.sidebar(!!state.selectedAlbum)}>
+          <Box sx={style.sidebarBoxStyle}>
             <Typography variant="h6" color="#fff" fontWeight={600}>
               Your Library
             </Typography>
@@ -187,14 +176,8 @@ const Home = () => {
         </Box>
 
         {/* Main Content */}
-        <Box
-          bgcolor="#212121"
-          borderRadius="10px"
-          width="70%"
-          height={state.selectedAlbum ? "80vh" : "90vh"}
-          overflow="auto"
-        >
-          <Box display="flex" flexDirection="column" gap={4} mx={3} my={3}>
+        <Box sx={style.mainContent(!!state.selectedAlbum)}>
+          <Box sx={style.contentInnerBox}>
             {categories
               .filter(
                 (section) =>
