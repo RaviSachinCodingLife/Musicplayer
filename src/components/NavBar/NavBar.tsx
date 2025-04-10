@@ -5,7 +5,6 @@ import {
   Box,
   Container,
   IconButton,
-  Link,
   Menu,
   MenuItem,
   Toolbar,
@@ -18,8 +17,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import * as style from "./style";
 import { NavBarProps } from "./types";
 import { useNavbar } from "./useNavbarHook";
-
-const settings = ["Logout"];
 
 const NavBar: FC<NavBarProps> = ({
   showSearchBar = true,
@@ -35,59 +32,29 @@ const NavBar: FC<NavBarProps> = ({
     handleOpenUserMenu,
     handleCloseNavMenu,
     handleCloseUserMenu,
-  } = useNavbar();
-
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onSearchChange(event.target.value);
-  };
-
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "?";
+    handleSearchInputChange,
+    userInitial,
+    settings,
+    navigate,
+  } = useNavbar(onSearchChange);
 
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: "#000" }}>
+    <AppBar position="sticky" sx={style.appBar}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <IconButton
-                aria-label="icon"
-                sx={{ display: { xs: "none", md: "flex" } }}
-              >
-                <img
-                  src={icon}
-                  alt="icon"
-                  style={{ marginRight: "8px", height: "45px", width: "45px" }}
-                />
+          <Box sx={style.mainBoxStyle}>
+            <Box sx={style.iconBoxStyle}>
+              <IconButton aria-label="icon" sx={style.iconBtnStyle}>
+                <img src={icon} alt="icon" style={style.iconImgStyle} />
               </IconButton>
 
-              <Typography
-                variant="h6"
-                noWrap
-                sx={{
-                  display: { xs: "none", md: "flex" },
-                  fontWeight: 400,
-                  letterSpacing: ".3rem",
-                  color: "inherit",
-                }}
-              >
+              <Typography variant="h6" noWrap sx={style.titleTypo}>
                 BeatBox
               </Typography>
 
               {/* Desktop Search */}
               {showSearchBar && (
-                <Box
-                  sx={{ display: { xs: "none", md: "flex" }, color: "#fff" }}
-                >
+                <Box sx={style.desktopSearch}>
                   <style.SearchContainer>
                     <style.SearchIconWrapper>
                       <SearchIcon sx={{ color: "grey" }} />
@@ -103,7 +70,7 @@ const NavBar: FC<NavBarProps> = ({
 
               {/* Mobile Menu */}
               {showMobileView && (
-                <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                <Box sx={style.mobileSearch}>
                   <IconButton
                     size="large"
                     onClick={handleOpenNavMenu}
@@ -145,16 +112,7 @@ const NavBar: FC<NavBarProps> = ({
                   style={{ height: "32px", width: "32px" }}
                 />
               </IconButton>
-              <Typography
-                variant="h5"
-                noWrap
-                sx={{
-                  display: { xs: "flex", md: "none" },
-                  fontWeight: 400,
-                  letterSpacing: ".3rem",
-                  color: "inherit",
-                }}
-              >
+              <Typography variant="h5" noWrap sx={style.titleMobileTypo}>
                 BeatBox
               </Typography>
             </Box>
@@ -185,15 +143,16 @@ const NavBar: FC<NavBarProps> = ({
                   >
                     {settings.map((setting) => (
                       <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                        <Link
-                          href="/"
-                          underline="none"
-                          display="block"
+                        <Typography
+                          onClick={() => {
+                            localStorage.removeItem("user");
+                            navigate("/");
+                          }}
+                          textAlign="center"
                           color="#000"
-                          onClick={() => localStorage.removeItem("user")}
                         >
-                          <Typography textAlign="center">{setting}</Typography>
-                        </Link>
+                          {setting}
+                        </Typography>
                       </MenuItem>
                     ))}
                   </Menu>

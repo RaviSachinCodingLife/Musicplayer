@@ -1,10 +1,12 @@
 import { Fragment } from "react";
 import NavBar from "../../components/NavBar/NavBar";
-import { Box, Link } from "@mui/material";
-import bgImg from "../../assets/image/AuthPageImg.jpg";
+import { Box } from "@mui/material";
 import Fotter from "../../components/Fotter/Fotter";
+import { useNavigate } from "react-router-dom";
+import * as style from "./style";
 
 const AuthPage = () => {
+  const navigate = useNavigate();
   return (
     <Fragment>
       <NavBar
@@ -13,19 +15,12 @@ const AuthPage = () => {
         showSupport={false}
         showMobileView={false}
       />
-      <Link href="/login" underline="none" display="block">
-        <Box
-          sx={{
-            height: "70vh",
-            width: "100%",
-            backgroundImage: `url(${bgImg})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-          }}
-        />
-      </Link>
+      <Box
+        sx={style.bgImage}
+        onClick={() => {
+          navigate("/login");
+        }}
+      />
       <Fotter />
     </Fragment>
   );

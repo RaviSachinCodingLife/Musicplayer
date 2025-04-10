@@ -1,68 +1,84 @@
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import NavBar from "../../components/NavBar/NavBar";
-import albumData from "../../json/AlbumCard.json";
-import { useState } from "react";
 import AlbumCard from "../../components/Album/Album";
 import MusicPlayer from "../../components/MusicPlayer/MusicPlayer";
 import AddIcon from "@mui/icons-material/Add";
+import albumData from "../../json/AlbumCard.json";
+import { useHome } from "./useHomeHook";
 
 const Home = () => {
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
-  const [selectedAlbum, setSelectedAlbum] = useState<{
-    title: string;
-    artist: string;
-    image: string;
-    audio: string;
-  } | null>(null);
+  const {
+    state,
+    setState,
+    handleAlbumClick,
+    handleAddToPlaylist,
+    handleNextSong,
+    handlePreviousSong,
+    availableToAdd,
+    categories,
+  } = useHome();
 
-  const [playlist, setPlaylist] = useState<typeof albumData>([]);
-  const [showAddMode, setShowAddMode] = useState(false);
-
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const categories: {
-    title: string;
-    key: string;
-    range: [number, number];
-  }[] = [
-    { title: "Trending Songs", key: "Trending", range: [1, 6] },
-    { title: "Popular Artists", key: "Popular Artist", range: [7, 14] },
-    {
-      title: "Popular Albums and Singles",
-      key: "Album & Singles",
-      range: [15, 22],
-    },
-  ];
-
-  const handleAlbumClick = (album: (typeof albumData)[0]) => {
-    setSelectedAlbum(album);
-  };
-
-  const handleAddToPlaylist = (album: (typeof albumData)[0]) => {
-    if (!playlist.find((a) => a.id === album.id)) {
-      setPlaylist([...playlist, album]);
-    }
-    setShowAddMode(false);
-  };
-
-  const renderSection = (
-    title: string,
+  const filteredAlbums = (
     key: string,
-    range: [number, number]
+    range: [number, number],
+    isExpanded: boolean
   ) => {
-    const isExpanded = expandedSection === key;
-
-    const filteredData = albumData.filter((album) => {
-      const matchesCategory = album.category === key;
-      const matchesRange =
+    return albumData.filter((album) => {
+      const matchCategory = album.category === key;
+      const matchRange =
         isExpanded || (album.id >= range[0] && album.id <= range[1]);
-      const matchesSearch =
-        album.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        album.artist.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchSearch =
+        album.title.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
+        album.artist.toLowerCase().includes(state.searchQuery.toLowerCase());
 
-      return matchesCategory && matchesRange && matchesSearch;
+      return matchCategory && matchRange && matchSearch;
     });
+  };
 
+  const renderAlbumList = (
+    albums: typeof albumData,
+    onClick: (album: (typeof albumData)[0]) => void
+  ) => {
+    if (albums.length === 0) {
+      return <Typography color="gray">No songs found</Typography>;
+    }
+
+    return albums.map((album) => (
+      <Box
+        key={album.id}
+        display="flex"
+        alignItems="center"
+        gap={1}
+        mb={1}
+        onClick={() => onClick(album)}
+        sx={{ cursor: "pointer" }}
+      >
+        <img
+          src={album.image}
+          alt={album.title}
+          width={40}
+          height={40}
+          style={{ borderRadius: 4 }}
+        />
+        <Box>
+          <Typography fontSize={14} color="#fff">
+            {album.title}
+          </Typography>
+          <Typography fontSize={12} color="gray">
+            {album.artist}
+          </Typography>
+        </Box>
+      </Box>
+    ));
+  };
+
+  const renderSection = ({
+    title,
+    key,
+    range,
+  }: (typeof categories)[number]) => {
+    const isExpanded = state.expandedSection === key;
+    const filteredData = filteredAlbums(key, range, isExpanded);
     const isPopularArtist = key === "Popular Artist";
 
     return (
@@ -74,7 +90,12 @@ const Home = () => {
           <Typography
             variant="body1"
             sx={{ color: "grey", cursor: "pointer" }}
-            onClick={() => setExpandedSection(isExpanded ? null : key)}
+            onClick={() =>
+              setState((prev) => ({
+                ...prev,
+                expandedSection: isExpanded ? null : key,
+              }))
+            }
           >
             {isExpanded ? "Show Less" : "Show All"}
           </Typography>
@@ -99,10 +120,6 @@ const Home = () => {
     );
   };
 
-  const availableToAdd = albumData.filter(
-    (album) => !playlist.find((p) => p.id === album.id)
-  );
-
   return (
     <Box display="flex" flexDirection="column">
       <NavBar
@@ -110,7 +127,9 @@ const Home = () => {
         showProfile
         showSupport
         showMobileView
-        onSearchChange={(value) => setSearchQuery(value)}
+        onSearchChange={(value) =>
+          setState((prev) => ({ ...prev, searchQuery: value }))
+        }
       />
 
       <Box display="flex" gap={1} mx={2}>
@@ -119,8 +138,8 @@ const Home = () => {
           bgcolor="#212121"
           borderRadius="10px"
           width="30%"
-          height={selectedAlbum ? "80vh" : "90vh"}
-          overflow={"auto"}
+          height={state.selectedAlbum ? "80vh" : "90vh"}
+          overflow="auto"
           p={2}
         >
           <Box
@@ -133,52 +152,25 @@ const Home = () => {
               Your Library
             </Typography>
             <Tooltip title="Add album to playlist">
-              <IconButton onClick={() => setShowAddMode(!showAddMode)}>
+              <IconButton
+                onClick={() =>
+                  setState((prev) => ({
+                    ...prev,
+                    showAddMode: !prev.showAddMode,
+                  }))
+                }
+              >
                 <AddIcon sx={{ color: "#fff" }} />
               </IconButton>
             </Tooltip>
           </Box>
 
-          {/* Playlist Albums */}
           <Typography variant="subtitle1" fontWeight={600} color="#fff" mb={1}>
             Playlist
           </Typography>
-          {playlist.length === 0 ? (
-            <Typography variant="body2" color="gray">
-              No songs added yet
-            </Typography>
-          ) : (
-            playlist.map((album) => (
-              <Box
-                key={album.id}
-                display="flex"
-                alignItems="center"
-                gap={1}
-                mb={1}
-                onClick={() => handleAlbumClick(album)}
-                sx={{ cursor: "pointer" }}
-              >
-                <img
-                  src={album.image}
-                  alt={album.title}
-                  width={40}
-                  height={40}
-                  style={{ borderRadius: 4 }}
-                />
-                <Box>
-                  <Typography fontSize={14} color="#fff">
-                    {album.title}
-                  </Typography>
-                  <Typography fontSize={12} color="gray">
-                    {album.artist}
-                  </Typography>
-                </Box>
-              </Box>
-            ))
-          )}
+          {renderAlbumList(state.playlist, handleAlbumClick)}
 
-          {/* Add-to-Playlist Mode */}
-          {showAddMode && (
+          {state.showAddMode && (
             <>
               <Typography
                 variant="subtitle1"
@@ -189,37 +181,7 @@ const Home = () => {
               >
                 Add to Playlist
               </Typography>
-              {availableToAdd.length === 0 ? (
-                <Typography color="gray">No more albums to add</Typography>
-              ) : (
-                availableToAdd.map((album) => (
-                  <Box
-                    key={album.id}
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                    mb={1}
-                    onClick={() => handleAddToPlaylist(album)}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <img
-                      src={album.image}
-                      alt={album.title}
-                      width={40}
-                      height={40}
-                      style={{ borderRadius: 4 }}
-                    />
-                    <Box>
-                      <Typography fontSize={14} color="#fff">
-                        {album.title}
-                      </Typography>
-                      <Typography fontSize={12} color="gray">
-                        {album.artist}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))
-              )}
+              {renderAlbumList(availableToAdd, handleAddToPlaylist)}
             </>
           )}
         </Box>
@@ -229,30 +191,31 @@ const Home = () => {
           bgcolor="#212121"
           borderRadius="10px"
           width="70%"
-          height={selectedAlbum ? "80vh" : "90vh"}
+          height={state.selectedAlbum ? "80vh" : "90vh"}
           overflow="auto"
         >
           <Box display="flex" flexDirection="column" gap={4} mx={3} my={3}>
             {categories
               .filter(
                 (section) =>
-                  expandedSection === null || section.key === expandedSection
+                  state.expandedSection === null ||
+                  state.expandedSection === section.key
               )
-              .map((section) =>
-                renderSection(section.title, section.key, section.range)
-              )}
+              .map((section) => renderSection(section))}
           </Box>
         </Box>
       </Box>
 
-      {/* Audio Player */}
-      {selectedAlbum && (
+      {/* Music Player */}
+      {state.selectedAlbum && (
         <Box px={2}>
           <MusicPlayer
-            title={selectedAlbum.title}
-            artist={selectedAlbum.artist}
-            image={selectedAlbum.image}
-            audioSrc={selectedAlbum.audio}
+            title={state.selectedAlbum.title}
+            artist={state.selectedAlbum.artist}
+            image={state.selectedAlbum.image}
+            audioSrc={state.selectedAlbum.audio}
+            onNext={handleNextSong}
+            onPrevious={handlePreviousSong}
           />
         </Box>
       )}

@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import { Box, IconButton, Slider, Typography, Avatar } from "@mui/material";
 import {
   PlayArrow,
@@ -7,88 +6,45 @@ import {
   SkipNext,
   SkipPrevious,
 } from "@mui/icons-material";
+import { AudioPlayerProps } from "./types";
+import { useMusicPlayer } from "./useMusicPlayerHook";
+import * as style from "./style";
 
-interface AudioPlayerProps {
-  title: string;
-  artist: string;
-  image: string;
-  audioSrc: string;
-}
+const MusicPlayer = ({
+  title,
+  artist,
+  image,
+  audioSrc,
+  onNext,
+  onPrevious,
+}: AudioPlayerProps) => {
+  const {
+    state,
+    audioRef,
+    togglePlay,
+    handleSliderChange,
+    handleVolumeChange,
+    formatTime,
+  } = useMusicPlayer();
 
-const MusicPlayer = ({ title, artist, image, audioSrc }: AudioPlayerProps) => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const updateProgress = () => setProgress(audio.currentTime);
-    const setAudioDuration = () => setDuration(audio.duration);
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("loadedmetadata", setAudioDuration);
-    audio.addEventListener("play", handlePlay);
-    audio.addEventListener("pause", handlePause);
-
-    return () => {
-      audio.removeEventListener("timeupdate", updateProgress);
-      audio.removeEventListener("loadedmetadata", setAudioDuration);
-      audio.removeEventListener("play", handlePlay);
-      audio.removeEventListener("pause", handlePause);
-    };
-  }, []);
-
-  const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (audio.paused) {
-      audio.play();
-    } else {
-      audio.pause();
-    }
-  };
-
-  const handleSliderChange = (_: Event, value: number | number[]) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const newTime = typeof value === "number" ? value : value[0];
-    audio.currentTime = newTime;
-    setProgress(newTime);
-  };
-
-  const handleVolumeChange = (_: Event, value: number | number[]) => {
-    const newVolume = typeof value === "number" ? value : value[0];
-    setVolume(newVolume);
-    if (audioRef.current) audioRef.current.volume = newVolume;
-  };
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-  };
+  const controlButtons = [
+    { icon: <SkipPrevious sx={{ color: "white" }} />, onClick: onPrevious },
+    {
+      icon: state.isPlaying ? (
+        <Pause sx={{ color: "white" }} />
+      ) : (
+        <PlayArrow sx={{ color: "white" }} />
+      ),
+      onClick: togglePlay,
+    },
+    { icon: <SkipNext sx={{ color: "white" }} />, onClick: onNext },
+  ];
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      bgcolor="#000"
-      px={2}
-      py={1}
-      color="#fff"
-      borderRadius="10px"
-    >
-      {/* Left: Song Info */}
+    <Box sx={style.mainBoxStyle}>
+      {/*Song Info */}
       <Box display="flex" alignItems="center" gap={2}>
-        <Avatar variant="rounded" src={image} sx={{ width: 56, height: 56 }} />
+        <Avatar variant="rounded" src={image} sx={style.avtarStyle} />
         <Box>
           <Typography fontWeight={600}>{title}</Typography>
           <Typography variant="body2" color="gray">
@@ -97,43 +53,35 @@ const MusicPlayer = ({ title, artist, image, audioSrc }: AudioPlayerProps) => {
         </Box>
       </Box>
 
-      {/* Center: Controls */}
+      {/*Controls */}
       <Box display="flex" alignItems="center" gap={2} flex={1} px={4}>
-        <IconButton>
-          <SkipPrevious sx={{ color: "white" }} />
-        </IconButton>
-        <IconButton onClick={togglePlay}>
-          {isPlaying ? (
-            <Pause sx={{ color: "white" }} />
-          ) : (
-            <PlayArrow sx={{ color: "white" }} />
-          )}
-        </IconButton>
-        <IconButton>
-          <SkipNext sx={{ color: "white" }} />
-        </IconButton>
+        {controlButtons.map((btn, idx) => (
+          <IconButton key={idx} onClick={btn.onClick}>
+            {btn.icon}
+          </IconButton>
+        ))}
 
         <Typography variant="body2" width={40}>
-          {formatTime(progress)}
+          {formatTime(state.progress)}
         </Typography>
 
         <Slider
-          value={progress}
-          max={duration}
+          value={state.progress}
+          max={state.duration}
           onChange={handleSliderChange}
-          sx={{ color: "white", flex: 1 }}
+          sx={style.siderStyle}
         />
 
         <Typography variant="body2" width={40}>
-          {formatTime(duration)}
+          {formatTime(state.duration)}
         </Typography>
       </Box>
 
-      {/* Right: Volume */}
-      <Box display="flex" alignItems="center" gap={1} width={200}>
+      {/*Volume */}
+      <Box sx={style.volBoxStyle}>
         <VolumeUp />
         <Slider
-          value={volume}
+          value={state.volume}
           onChange={handleVolumeChange}
           min={0}
           max={1}

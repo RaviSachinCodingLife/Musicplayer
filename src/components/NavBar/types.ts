@@ -1,4 +1,4 @@
-type NavBarProps = {
+interface NavBarProps  {
   showSearchBar: boolean;
   showProfile: boolean;
   showSupport:boolean;

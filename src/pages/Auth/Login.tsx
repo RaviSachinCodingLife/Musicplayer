@@ -4,215 +4,114 @@ import {
   Divider,
   IconButton,
   InputAdornment,
-  Link,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import React, { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../services/FirebaseConfig";
 import googleIcon from "../../assets/image/GoogleLogo.png";
 import icon from "../../assets/image/CirleCropedImg.png";
 import Fotter from "../../components/Fotter/Fotter";
-import { useNavigate } from "react-router-dom";
-
-type LoginFormData = {
-  email: string;
-  password: string;
-};
+import { useLogin } from "./useAuthHook";
+import * as style from "./style";
 
 const Login = () => {
-  const [loginData, setLoginData] = useState<LoginFormData>({
-    email: "",
-    password: "",
-  });
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+  const {
+    state,
+    handleChange,
+    toggleShowPassword,
+    handleLogin,
+    handleGoogleLogin,
+    navigate,
+  } = useLogin();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setLoginData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleLogin = async () => {
-    try {
-      const userCred = await signInWithEmailAndPassword(
-        auth,
-        loginData.email,
-        loginData.password
-      );
-      const user = userCred.user;
-      const token = await user.getIdToken();
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ name: user.displayName, email: user.email, token })
-      );
-      navigate("/home");
-    } catch (err: any) {
-      alert(err.message);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      const token = await user.getIdToken();
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ name: user.displayName, email: user.email, token })
-      );
-      navigate("/home");
-    } catch (err: any) {
-      alert(err.message);
-    }
-  };
+  const fields = [
+    {
+      name: "email",
+      label: "Email",
+      type: "email",
+    },
+    {
+      name: "password",
+      label: "Password",
+      type: state.showPassword ? "text" : "password",
+      adornment: (
+        <InputAdornment position="end">
+          <IconButton
+            onClick={toggleShowPassword}
+            edge="end"
+            sx={{ color: "#aaa" }}
+          >
+            {state.showPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        </InputAdornment>
+      ),
+    },
+  ];
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      minHeight="100vh"
-      bgcolor="#121212"
-      px={2}
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        width="100%"
-        maxWidth="400px"
-        bgcolor="#212121"
-        borderRadius={2}
-        p={4}
-        boxShadow={4}
-      >
-        <img
-          src={icon}
-          alt="icon"
-          width="60px"
-          height="60px"
-          style={{ alignSelf: "center" }}
-        />
-        <Typography
-          variant="h5"
-          fontWeight={600}
-          color="#fff"
-          textAlign="center"
-          mb={3}
-        >
+    <Box sx={style.loginMainBox}>
+      <Box sx={style.loginChildBox}>
+        <img src={icon} alt="icon" style={style.iconBeatBox} />
+        <Typography variant="h5" sx={style.titleTypo}>
           Login to BeatBox
         </Typography>
 
         <Stack spacing={2}>
-          <TextField
-            name="email"
-            label="Email"
-            variant="outlined"
-            value={loginData.email}
-            onChange={handleChange}
-            InputProps={{ style: { color: "#fff" } }}
-            InputLabelProps={{ style: { color: "#aaa" } }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "&.Mui-focused fieldset": { borderColor: "#8d2c91" },
-                "&:hover fieldset": { borderColor: "#aaa" },
-              },
-            }}
-          />
-          <TextField
-            name="password"
-            type={showPassword ? "text" : "password"}
-            label="Password"
-            variant="outlined"
-            value={loginData.password}
-            onChange={handleChange}
-            InputProps={{
-              style: { color: "#fff" },
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    edge="end"
-                    sx={{ color: "#aaa" }}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            InputLabelProps={{ style: { color: "#aaa" } }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "&.Mui-focused fieldset": { borderColor: "#8d2c91" },
-                "&:hover fieldset": { borderColor: "#aaa" },
-              },
-            }}
-          />
+          {fields.map(({ name, label, type, adornment }) => (
+            <TextField
+              key={name}
+              name={name}
+              label={label}
+              type={type}
+              variant="outlined"
+              value={state[name as keyof typeof state]}
+              onChange={handleChange}
+              InputProps={{
+                style: { color: "#fff" },
+                endAdornment: adornment,
+              }}
+              InputLabelProps={{ style: { color: "#aaa" } }}
+              sx={style.textField}
+            />
+          ))}
 
           <Button
             fullWidth
             variant="contained"
             onClick={handleLogin}
-            sx={{
-              borderRadius: "50px",
-              height: "50px",
-              bgcolor: "#8d2c91",
-              fontWeight: 600,
-              fontSize: "18px",
-            }}
+            sx={style.loginButton}
           >
             Login
           </Button>
 
-          <Divider sx={{ color: "#aaa", fontSize: 14 }}>or</Divider>
+          <Divider sx={style.dividerStyle}>or</Divider>
 
           <Button
             fullWidth
             variant="outlined"
             onClick={handleGoogleLogin}
-            sx={{
-              borderRadius: "50px",
-              height: "50px",
-              color: "#fff",
-              fontWeight: 500,
-              borderColor: "#555",
-              "&:hover": { borderColor: "#aaa" },
-              pl: 2,
-            }}
+            sx={style.googleButton}
           >
-            <img
-              src={googleIcon}
-              alt="Google"
-              style={{ width: 20, height: 20, marginRight: 10 }}
-            />
+            <img src={googleIcon} alt="Google" style={style.googleIcon} />
             Sign in with Google
           </Button>
         </Stack>
-        <Typography
-          variant="body1"
-          display={"flex"}
-          gap={0.5}
-          mt={2}
-          alignSelf={"center"}
-        >
+
+        <Typography variant="body1" sx={style.bottomTypo}>
           Don't have an account?
-          <Link
-            href="/signup"
-            underline="none"
-            display="block"
+          <Typography
             color="#fff"
-            sx={{
-              "&: hover": { color: "#8d2c91", textDecoration: "underline" },
+            sx={style.signUpTypo}
+            onClick={() => {
+              navigate("/signup");
             }}
           >
             Sign up for Spotify
-          </Link>
+          </Typography>
         </Typography>
       </Box>
+
       <Box width="100%">
         <Fotter />
       </Box>
