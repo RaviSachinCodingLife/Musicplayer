@@ -107,7 +107,7 @@ const Login = () => {
               navigate("/signup");
             }}
           >
-            Sign up for Spotify
+            Sign up for BeatBox
           </Typography>
         </Typography>
       </Box>
